@@ -5,6 +5,11 @@ import InvestmentPredictor.IDataElement;
 public class XMLFile implements IDataSource
 {
 
+	XMLFile()
+	{
+		
+	}
+	
 	@Override
 	public void RetrieveData() 
 	{

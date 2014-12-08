@@ -4,9 +4,14 @@ import InvestmentPredictor.INeuralNetwork;
 import InvestmentPredictor.INeuron;
 import InvestmentPredictor.IResult;
 
-public class NeuralNetwork implements INeuralNetwork 
+public class BasicNeuralNetwork implements INeuralNetwork 
 {
 
+	public BasicNeuralNetwork()
+	{
+		
+	}
+	
 	@Override
 	public IResult GetResult() 
 	{

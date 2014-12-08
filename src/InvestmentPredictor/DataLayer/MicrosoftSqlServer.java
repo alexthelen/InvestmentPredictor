@@ -2,9 +2,14 @@ package InvestmentPredictor.DataLayer;
 
 import InvestmentPredictor.IDataElement;
 
-public class MicrosoftSqlServer implements IDataSource
+class MicrosoftSqlServer implements IDataSource
 {
 
+	MicrosoftSqlServer()
+	{
+		
+	}
+	
 	@Override
 	public void RetrieveData() 
 	{

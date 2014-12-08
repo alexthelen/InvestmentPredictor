@@ -2,8 +2,13 @@ package InvestmentPredictor.DataLayer;
 
 import InvestmentPredictor.IDataElement;
 
-public class SqlLite implements IDataSource {
-
+class SqlLite implements IDataSource 
+{
+	SqlLite()
+	{
+		
+	}
+	
 	@Override
 	public void RetrieveData() 
 	{
