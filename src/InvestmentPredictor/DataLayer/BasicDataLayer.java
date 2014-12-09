@@ -11,7 +11,7 @@ public class BasicDataLayer implements IDataLayer
 {
 
 	private ArrayList<IDataSource> dataSources = new ArrayList<IDataSource>();
-	private YahooFinance yahooFinance = new YahooFinance();
+	private YahooFinance yahooFinance;
 	private XMLFile xmlFile = new XMLFile();
 	private SqlLite sqlLite = new SqlLite();
 	private MicrosoftSqlServer microsoftSqlServer = new MicrosoftSqlServer();
