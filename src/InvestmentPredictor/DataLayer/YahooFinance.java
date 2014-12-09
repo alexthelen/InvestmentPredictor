@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.json.JSONException;
@@ -21,18 +22,26 @@ class YahooFinance implements IDataSource
 	private JSONTokener tokener;
 	private JSONObject result;
 	
-	private String yqlfinanceHistData = "select * from yahoo.finance.historicaldata where symbol = 'YHOO' and startDate = '2009-09-11' and endDate = '2010-03-10'";
+	private String yqlFinanceHistData = "select * from yahoo.finance.historicaldata";
 	
-	private Date startDate = new Date();
-	private Date endDate = new Date();
+	private Iterable<String> _securityTickers;
+	private Date _startDate = new Date();
+	private Date _endDate = new Date();
 	
-	YahooFinance()
+	YahooFinance(Iterable<String> securityTickers)
 	{
-		
+		this._securityTickers = securityTickers;
 	}
 	
-	void SetStartDate(Date value){ this.startDate = value; }
-	void SetEndDate(Date value){this.endDate = value; }
+	YahooFinance(Iterable<String> securityTickers, Date startDate, Date endDate)
+	{
+		this._securityTickers = securityTickers;
+		this._startDate = startDate;
+		this._endDate = endDate;
+	}
+	
+	void SetStartDate(Date value){ this._startDate = value; }
+	void SetEndDate(Date value){this._endDate = value; }
 	
 	@Override
 	public void RetrieveData() 
@@ -80,6 +89,14 @@ class YahooFinance implements IDataSource
 	
 	private String BuildYqlQuery()
 	{
-		return null;
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String whereClause = String.format(" where startDate = '%s' and endDate = '%s'", df.format(this._startDate), df.format(this._endDate));
+		
+		for(String ticker : this._securityTickers)
+		{
+			whereClause = whereClause.concat(String.format(" and symbol = '%s'", ticker));
+		}
+		
+		return this.yqlFinanceHistData.concat(whereClause);
 	}
 }
