@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,33 +56,21 @@ public class YahooFinance
 		JSONArray quotes;
 		JSONObject currentQuote;
 		
-		String symbol, stringDate;		
-		Calendar date;
-		int year, month, day, volume;	
-		BigDecimal openPrice, highPrice, lowPrice, closePrice, adjClose;
-		
 		try 
 		{
-			quotes = yqlResult.getJSONObject("query").getJSONObject("results").getJSONArray("quote");
-			
-			for(int i = 0; i < quotes.length(); i++)
+			if(yqlResult.getJSONObject("query").getJSONObject("results").get("quote") instanceof JSONObject)
 			{
-				currentQuote = quotes.getJSONObject(i);
-				symbol = currentQuote.getString("Symbol");
-				
-				stringDate = currentQuote.getString("Date");
-				year = Integer.parseInt(stringDate.substring(0, 4));
-				month = Integer.parseInt(stringDate.substring(5, 7));
-				day = Integer.parseInt(stringDate.substring(8, 10));
-				date = new GregorianCalendar(year, month, day);
-				
-				openPrice = new BigDecimal(currentQuote.getString("Open"));
-				highPrice = new BigDecimal(currentQuote.getString("High"));
-				lowPrice = new BigDecimal(currentQuote.getString("Low"));
-				closePrice = new BigDecimal(currentQuote.getString("Close"));
-				volume = Integer.parseInt(currentQuote.getString("Volume"));
-				adjClose = new BigDecimal(currentQuote.getString("Adj_Close"));
-				results.add(new FinanceHistoricalData(symbol, date, openPrice, highPrice, lowPrice, closePrice, volume, adjClose));
+				currentQuote = yqlResult.getJSONObject("query").getJSONObject("results").getJSONObject("quote");		
+				results.add(new FinanceHistoricalData(currentQuote));
+			}
+			else if(yqlResult.getJSONObject("query").getJSONObject("results").get("quote") instanceof JSONArray)
+			{
+				quotes = yqlResult.getJSONObject("query").getJSONObject("results").getJSONArray("quote");
+			
+				for(int i = 0; i < quotes.length(); i++)
+				{	
+					results.add(new FinanceHistoricalData(quotes.getJSONObject(i)));
+				}
 			}
 		} 
 		catch (JSONException e) 
@@ -138,4 +125,5 @@ public class YahooFinance
 		whereClause = whereClause.concat(")");
 		return this.yqlFinanceHistData.concat(whereClause);
 	}
+
 }

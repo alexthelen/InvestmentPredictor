@@ -3,6 +3,10 @@ package InvestmentPredictor.DataLayer.YahooQueryLanguage;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class FinanceHistoricalData 
 {
@@ -28,6 +32,24 @@ public class FinanceHistoricalData
 		this._volume = volume;
 		this._adjClose = adjClose;
 	}
+	
+	public FinanceHistoricalData(JSONObject jsonObject) throws JSONException
+	{			
+		this._symbol = jsonObject.getString("Symbol");
+		
+		String stringDate = jsonObject.getString("Date");
+		int year = Integer.parseInt(stringDate.substring(0, 4));
+		int month = Integer.parseInt(stringDate.substring(5, 7)) - 1;
+		int day = Integer.parseInt(stringDate.substring(8, 10));
+		this._date =  new GregorianCalendar(year, month, day);;
+		
+		this._openPrice = new BigDecimal(jsonObject.getString("Open"));;
+		this._highPrice = new BigDecimal(jsonObject.getString("High"));;
+		this._lowPrice = new BigDecimal(jsonObject.getString("Low"));;
+		this._closePrice = new BigDecimal(jsonObject.getString("Close"));;
+		this._volume = Integer.parseInt(jsonObject.getString("Volume"));;
+		this._adjClose = new BigDecimal(jsonObject.getString("Adj_Close"));;
+	}
 		
 	// Getters & Setters ---------------------------------------------- 
 	public String GetSymbol() { return this._symbol; }
@@ -40,7 +62,7 @@ public class FinanceHistoricalData
 	public BigDecimal GetAdjClose() { return this._adjClose; }
 	
 	// Public Methods -------------------------------------------------
-		
+	
 		
 	// Private Methods ------------------------------------------------
 }
