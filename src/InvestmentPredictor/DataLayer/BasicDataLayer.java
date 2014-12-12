@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import InvestmentPredictor.IDataLayer;
 import InvestmentPredictor.INeuron;
 import InvestmentPredictor.IResult;
-import InvestmentPredictor.ISecurity;
+import InvestmentPredictor.DataLayer.YahooQueryLanguage.YahooFinance;
 
 public class BasicDataLayer implements IDataLayer 
 {
 
-	private ArrayList<IDataSource> dataSources = new ArrayList<IDataSource>();
 	private YahooFinance yahooFinance;
 	private XMLFile xmlFile = new XMLFile();
 	private SqlLite sqlLite = new SqlLite();
@@ -18,10 +17,7 @@ public class BasicDataLayer implements IDataLayer
 	
 	public BasicDataLayer()
 	{
-		dataSources.add(yahooFinance);
-		dataSources.add(xmlFile);
-		dataSources.add(sqlLite);
-		dataSources.add(microsoftSqlServer);
+		
 	}
 	
 	@Override
@@ -29,14 +25,6 @@ public class BasicDataLayer implements IDataLayer
 	{
 		// TODO Auto-generated method stub
 		// Use sqlLite
-		return null;
-	}
-
-	@Override
-	public Iterable<ISecurity> GetSecurities() 
-	{
-		// TODO Auto-generated method stub
-		// Use yahooFinance
 		return null;
 	}
 
