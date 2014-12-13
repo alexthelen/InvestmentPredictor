@@ -69,6 +69,7 @@ public class SqlLite
 		}
 	}
 	
+	
 	public void ExecuteDelete(String tableName, String whereClause)
 	{
 		String deleteStatement = String.format("Delete From %s where %s;", tableName, whereClause);	
@@ -76,6 +77,20 @@ public class SqlLite
 		{
 			this.statement = this.connection.createStatement();
 			this.statement.executeUpdate(deleteStatement);
+		}
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}	
+	}
+	
+	public void ExecuteDrop(String tableName)
+	{
+		String dropStatement = String.format("Drop %s;", tableName);	
+		try
+		{
+			this.statement = this.connection.createStatement();
+			this.statement.executeUpdate(dropStatement);
 		}
 		catch (SQLException e) 
 		{
