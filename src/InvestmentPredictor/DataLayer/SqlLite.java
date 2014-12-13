@@ -2,17 +2,20 @@ package InvestmentPredictor.DataLayer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SqlLite
 {
 	// Attributes -----------------------------------------------------
 	Connection connection;
 	String sqlLiteConnectionString = "jdbc:sqlite:";
-	Statement statement;
 	
 	// Constructors ---------------------------------------------------
 	public SqlLite(String dbName)
@@ -34,6 +37,7 @@ public class SqlLite
 			e.printStackTrace();
 		}
 	}
+	
 	public Boolean IsOpen()
 	{
 		Boolean result = false;
@@ -54,10 +58,7 @@ public class SqlLite
 	public void CloseConnection()
 	{
 		try 
-		{
-			if(this.statement != null)
-				this.statement.close();
-			
+		{			
 			if(this.IsClosed())
 				this.connection.close();
 		}
@@ -66,9 +67,9 @@ public class SqlLite
 			e.printStackTrace();
 		}
 		
-		this.statement = null;
 		this.connection = null;
 	}
+	
 	public Boolean IsClosed()
 	{
 		Boolean result = false;
@@ -90,6 +91,7 @@ public class SqlLite
 	public void ExecuteCreateTable(String tableName, String[] columns)
 	{
 		String createStatement = String.format("Create Table %s (", tableName);
+		Statement statement;
 		
 		for(int i = 0; i < columns.length; i++)
 			createStatement = createStatement.concat(columns[i]).concat(", ");
@@ -99,8 +101,9 @@ public class SqlLite
 		
 		try
 		{
-			this.statement = this.connection.createStatement();
-			this.statement.executeUpdate(createStatement);
+			statement = this.connection.createStatement();
+			statement.executeUpdate(createStatement);
+			statement.close();
 		}
 		catch (SQLException e) 
 		{
@@ -108,14 +111,16 @@ public class SqlLite
 		}
 	}
 	
-	
 	public void ExecuteDelete(String tableName, String whereClause)
 	{
 		String deleteStatement = String.format("Delete From %s where %s;", tableName, whereClause);	
+		Statement statement;
+		
 		try
 		{
-			this.statement = this.connection.createStatement();
-			this.statement.executeUpdate(deleteStatement);
+			statement = this.connection.createStatement();
+			statement.executeUpdate(deleteStatement);
+			statement.close();
 		}
 		catch (SQLException e) 
 		{
@@ -125,16 +130,19 @@ public class SqlLite
 	
 	public void ExecuteDrop(String tableName)
 	{
-		String dropStatement = String.format("Drop %s;", tableName);	
+		String dropStatement = String.format("Drop Table If Exists %s;", tableName);	
+		Statement statement;
+		
 		try
 		{
-			this.statement = this.connection.createStatement();
-			this.statement.executeUpdate(dropStatement);
+			statement = this.connection.createStatement();
+			statement.executeUpdate(dropStatement);
+			statement.close();
 		}
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
-		}	
+		}
 	}
 	
 	public void ExecuteInsert(String tableName, String[] columns, String[] values)
@@ -142,19 +150,23 @@ public class SqlLite
 		String insertStatement = "Insert Into %s (%s) Values (%s);";
 		String columnString = "";
 		String valueString = "";
+		Statement statement;
 		
 		for(int i = 0; i < columns.length; i++)
 		{
-			columnString = columnString.concat(columns[i]);
-			valueString = valueString.concat(values[i]);
+			columnString = columnString.concat(columns[i]).concat(", ");
+			valueString = valueString.concat(values[i]).concat(", ");
 		}
 		
-		insertStatement = String.format(insertStatement, columnString, valueString);
+		columnString = columnString.substring(0, columnString.length() - 2);
+		valueString = valueString.substring(0, valueString.length() - 2);
+		insertStatement = String.format(insertStatement, tableName, columnString, valueString);
 		
 		try 
 		{
-			this.statement = this.connection.createStatement();
-			this.statement.executeUpdate(insertStatement);
+			statement = this.connection.createStatement();
+			statement.executeUpdate(insertStatement);
+			statement.close();
 		} 
 		catch (SQLException e) 
 		{
@@ -164,18 +176,20 @@ public class SqlLite
 	
 	public void ExecuteUpdate(String tableName, String[] setValues, String whereClause)
 	{
-		String updateStatement = String.format("Update %s Set %s Where %s;", tableName, setValues, whereClause);
+		String updateStatement = "Update %s Set %s Where %s;";
 		String setValuesString = "";
+		Statement statement;
 		
 		for(int i = 0; i < setValues.length; i++)
 			setValuesString = setValuesString.concat(setValues[i]);
 		
-		updateStatement = String.format(updateStatement, setValuesString, whereClause);
+		updateStatement = String.format(updateStatement, tableName, setValuesString, whereClause);
 		
 		try 
 		{
-			this.statement = this.connection.createStatement();
-			this.statement.executeUpdate(updateStatement);
+			statement = this.connection.createStatement();
+			statement.executeUpdate(updateStatement);
+			statement.close();
 		} 
 		catch (SQLException e) 
 		{
@@ -193,10 +207,12 @@ public class SqlLite
 		JSONArray results = new JSONArray();
 		String selectStatement = "Select %s From %s";
 		String selectColumns = "";
+		Statement statement;
 		
 		for(int i = 0; i < columns.length; i++)
-			selectColumns = selectColumns.concat(columns[i]);
+			selectColumns = selectColumns.concat(columns[i]).concat(", ");
 		
+		selectColumns = selectColumns.substring(0, selectColumns.length() - 2);
 		selectStatement = String.format(selectStatement, selectColumns, tableName);
 		
 		if(whereClause != null && whereClause.trim() != "")
@@ -204,8 +220,9 @@ public class SqlLite
 		
 		try
 		{
-			this.statement = this.connection.createStatement();
-			results = (JSONArray) this.statement.executeQuery(selectStatement);
+			statement = this.connection.createStatement();
+			results = this.ConvertResultSetToJSONArray(statement.executeQuery(selectStatement));
+			statement.close();
 		}
 		catch (SQLException e) 
 		{
@@ -216,4 +233,64 @@ public class SqlLite
 	}
 	
 	// Private Methods ------------------------------------------------
+	private JSONArray ConvertResultSetToJSONArray(ResultSet rs) throws SQLException
+	{
+		JSONArray result = new JSONArray();
+		int columns;
+		String columnName;
+		
+		while(rs.next())
+		{
+			JSONObject record = new JSONObject();
+			columns = rs.getMetaData().getColumnCount() + 1;
+			
+			for(int i = 1; i < columns; i++)
+			{
+				columnName = rs.getMetaData().getColumnName(i);
+				
+				try 
+				{
+					switch (rs.getMetaData().getColumnType(i)) 
+					{
+						case Types.VARCHAR:
+						case Types.NVARCHAR:	
+						case Types.CHAR:
+						case Types.NCHAR:
+							record.put(columnName, rs.getString(i));					
+							break;
+						case Types.BIGINT:
+						case Types.INTEGER:
+						case Types.SMALLINT:
+						case Types.TINYINT:
+							record.put(columnName, rs.getInt(i));
+							break;
+						case Types.DOUBLE:
+						case Types.FLOAT:
+							record.put(columnName, rs.getDouble(i));
+							break;
+						case Types.BOOLEAN:
+							record.put(columnName, rs.getBoolean(i));
+							break;
+						case Types.DECIMAL:
+							record.put(columnName, rs.getBigDecimal(i));
+							break;					
+						case Types.DATE:
+							record.put(columnName, rs.getDate(i));
+							break;
+						default:
+							record.put(columnName, rs.getObject(i));
+							break;
+					}
+				} 
+				catch (JSONException e) 
+				{
+					e.printStackTrace();
+				}				
+			}
+			result.put(record);
+		}
+		
+		rs.close();
+		return result;
+	}
 }
