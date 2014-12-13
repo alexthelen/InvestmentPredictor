@@ -2,7 +2,6 @@ package InvestmentPredictor.NeuralNetwork;
 
 import InvestmentPredictor.INeuralNetwork;
 import InvestmentPredictor.INeuron;
-import InvestmentPredictor.IResult;
 
 public class BasicNeuralNetwork implements INeuralNetwork 
 {

@@ -2,8 +2,6 @@ package InvestmentPredictor.NeuralNetwork;
 
 import java.util.Date;
 
-import InvestmentPredictor.IResult;
-
 public class Result implements IResult {
 
 	@Override

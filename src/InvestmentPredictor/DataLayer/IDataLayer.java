@@ -1,4 +1,7 @@
-package InvestmentPredictor;
+package InvestmentPredictor.DataLayer;
+
+import InvestmentPredictor.INeuron;
+import InvestmentPredictor.NeuralNetwork.IResult;
 
 public interface IDataLayer 
 {

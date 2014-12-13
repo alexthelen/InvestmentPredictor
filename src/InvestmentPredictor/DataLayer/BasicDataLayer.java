@@ -2,17 +2,16 @@ package InvestmentPredictor.DataLayer;
 
 import java.util.ArrayList;
 
-import InvestmentPredictor.IDataLayer;
 import InvestmentPredictor.INeuron;
-import InvestmentPredictor.IResult;
 import InvestmentPredictor.DataLayer.YahooQueryLanguage.YahooFinance;
+import InvestmentPredictor.NeuralNetwork.IResult;
 
 public class BasicDataLayer implements IDataLayer 
 {
 
 	private YahooFinance yahooFinance;
 	private XMLFile xmlFile = new XMLFile();
-	private SqlLite sqlLite = new SqlLite();
+	private SqlLite sqlLite = new SqlLite("investmenetPredictor.db");
 	private MicrosoftSqlServer microsoftSqlServer = new MicrosoftSqlServer();
 	
 	public BasicDataLayer()

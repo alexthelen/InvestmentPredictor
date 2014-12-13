@@ -1,4 +1,4 @@
-package InvestmentPredictor;
+package InvestmentPredictor.NeuralNetwork;
 
 import java.util.Date;
 

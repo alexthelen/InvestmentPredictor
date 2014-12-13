@@ -1,5 +1,7 @@
 package InvestmentPredictor;
 
+import InvestmentPredictor.NeuralNetwork.IResult;
+
 public interface INeuralNetwork 
 {
 	public IResult GetResult();
