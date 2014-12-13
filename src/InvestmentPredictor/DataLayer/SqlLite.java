@@ -34,18 +34,57 @@ public class SqlLite
 			e.printStackTrace();
 		}
 	}
+	public Boolean IsOpen()
+	{
+		Boolean result = false;
+		try 
+		{
+			if(this.connection != null)
+				if(!this.connection.isClosed())
+					result = true;
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		} 
+		
+		return result;
+	}
 	
 	public void CloseConnection()
 	{
 		try 
 		{
-			this.statement.close();
-			this.connection.close();
+			if(this.statement != null)
+				this.statement.close();
+			
+			if(this.IsClosed())
+				this.connection.close();
 		}
 		catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
+		
+		this.statement = null;
+		this.connection = null;
+	}
+	public Boolean IsClosed()
+	{
+		Boolean result = false;
+		try 
+		{
+			if(this.connection == null)
+				result = true;
+			else if(this.connection.isClosed())
+			result = true;
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		} 
+		
+		return result;
 	}
 	
 	public void ExecuteCreateTable(String tableName, String[] columns)
