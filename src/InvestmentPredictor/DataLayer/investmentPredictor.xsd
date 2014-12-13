@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/investmentPredictor/" targetNamespace="http://www.example.org/investmentPredictor/">
+
+
+    <complexType name="Security">
+    	<sequence>
+    		<element name="Name" type="string"></element>
+    		<element name="Ticker" type="string"></element>
+    	</sequence>
+    	<attribute name="Type" type="string"></attribute>
+    </complexType>
+
+
+</schema>
