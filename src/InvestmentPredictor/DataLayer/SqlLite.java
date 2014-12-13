@@ -200,7 +200,7 @@ public class SqlLite
 		selectStatement = String.format(selectStatement, selectColumns, tableName);
 		
 		if(whereClause != null && whereClause.trim() != "")
-			selectStatement = selectStatement.concat(String.format("Where %s;", whereClause));
+			selectStatement = selectStatement.concat(String.format(" Where %s;", whereClause));
 		
 		try
 		{
