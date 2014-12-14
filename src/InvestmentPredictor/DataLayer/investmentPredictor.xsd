@@ -8,7 +8,8 @@
 		<complexType>		
 			<attribute name="Name" type="string"/>
 			<attribute name="Ticker" type="string"/>
-			<attribute name="InceptionDate" type="string"/>	
+			<attribute name="InceptionDate" type="date"/>	
+			<attribute name="Exchange" type="string"/>
 		</complexType>	
 		</element>
 	</sequence>
@@ -24,6 +25,7 @@
     		<attribute name="Name" type="string"/>
     		<attribute name="Ticker" type="string"/>
     		<attribute name="Type" type="string"/>  
+    		<attribute name="Exchange" type="string"/>
     	</complexType>	
     	</element>   
    	</sequence>
