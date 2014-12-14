@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/investmentPredictor/" targetNamespace="http://www.example.org/investmentPredictor/">
+
+<element name="Funds">
+<complexType>
+	<sequence>
+		<element name="Fund">
+		<complexType>		
+			<attribute name="Name" type="string"/>
+			<attribute name="Ticker" type="string"/>
+			<attribute name="InceptionDate" type="string"/>	
+		</complexType>	
+		</element>
+	</sequence>
+</complexType>
+</element>
+
 	
-	<element name="Funds">		
+<element name="Securities">
+<complexType>
+	<sequence>		
+		<element name="Security">
 		<complexType>
-			<sequence>		
-				<element name="Name" type="string"/>
-				<element name="Ticker" type="string"/>
-				<element name="InceptionDate" type="string"/>	
-			</sequence>		
-		</complexType>
-	</element>
-	
-	<element name="Securities">
-		<complexType>
-			<sequence>		
-    			<element name="Name" type="string"/>
-    			<element name="Ticker" type="string"/>
-    			<element name="Type" type="string"/>  	   
-   			</sequence>
-   		</complexType>
-    </element>
+    		<attribute name="Name" type="string"/>
+    		<attribute name="Ticker" type="string"/>
+    		<attribute name="Type" type="string"/>  
+    	</complexType>	
+    	</element>   
+   	</sequence>
+</complexType>
+</element>
 
 </schema>
