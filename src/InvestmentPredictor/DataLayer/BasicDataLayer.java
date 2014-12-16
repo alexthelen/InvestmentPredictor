@@ -10,7 +10,7 @@ public class BasicDataLayer implements IDataLayer
 {
 
 	private YahooFinance yahooFinance;
-	private XMLFile xmlFile = new XMLFile();
+	private XMLFile xmlFile = new XMLFile("..\\src\\InvestmentPredictor\\DataLayer\\investmentPredictor.xml");
 	private SqlLite sqlLite = new SqlLite("investmenetPredictor.db");
 	private MicrosoftSqlServer microsoftSqlServer = new MicrosoftSqlServer();
 	
