@@ -2,13 +2,24 @@ package InvestmentPredictor.NeuralNetwork;
 
 import java.util.Date;
 
-import InvestmentPredictor.INeuron;
-
 public class Neuron implements INeuron
 {
-
+	// Attributes -----------------------------------------------------
 	private static final long serialVersionUID = 1L; // TODO Figure out what this should actually be for Java serialization
 
+	// Constructors ---------------------------------------------------
+	public Neuron()
+	{
+		
+	}
+	
+	// Public Methods -------------------------------------------------
+	@Override
+	public String GetIdentifier() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	@Override
 	public double Process() 
 	{
@@ -37,4 +48,5 @@ public class Neuron implements INeuron
 		return null;
 	}
 
+	// Private Methods ------------------------------------------------
 }

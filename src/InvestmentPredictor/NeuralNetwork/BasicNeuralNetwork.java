@@ -1,14 +1,12 @@
 package InvestmentPredictor.NeuralNetwork;
 
-import InvestmentPredictor.INeuralNetwork;
-import InvestmentPredictor.INeuron;
+import InvestmentPredictor.DataLayer.IDataLayer;
 
 public class BasicNeuralNetwork implements INeuralNetwork 
 {
-
 	public BasicNeuralNetwork()
 	{
-		
+
 	}
 	
 	@Override
@@ -26,10 +24,9 @@ public class BasicNeuralNetwork implements INeuralNetwork
 	}
 
 	@Override
-	public INeuron GenerateNeuron()
+	public void EvolveNetwork()
 	{
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

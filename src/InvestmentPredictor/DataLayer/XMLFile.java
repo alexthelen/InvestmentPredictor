@@ -42,16 +42,14 @@ public class XMLFile
 	public void SetXmlFileName(String value) { this._xmlFileName = value; }
 	
 	// Public Methods -------------------------------------------------
-	public JSONArray ReadFile(String[] rootElements)
+	public JSONObject ReadFile(String[] rootElements)
 	{
-		JSONArray result = new JSONArray();
-		this._xmlFile = new File(this._xmlFileName);
-		
+		this._xmlFile = new File(this._xmlFileName);		
 		TransformerFactory transerformerFactory = TransformerFactory.newInstance();
 		Transformer transformer;
 		StringWriter writer = new StringWriter();
 		String xmlString = "";
-		JSONObject jObject;
+		JSONObject result = null;
 		
 		try 
 		{			
@@ -62,13 +60,7 @@ public class XMLFile
 			transformer.transform(new DOMSource(this.xmlDoc), new StreamResult(writer));
 			
 			xmlString = writer.getBuffer().toString().replace("\n|\r", "");		
-			jObject = XML.toJSONObject(xmlString).getJSONObject("schema");
-			
-			for(int i = 0; i < rootElements.length; i++)
-			{
-				if(jObject.has(rootElements[i]))
-					result.put(jObject.get(rootElements[i]));
-			}
+			result = XML.toJSONObject(xmlString).getJSONObject("schema");
 			
 		} 
 		catch (ParserConfigurationException | SAXException | IOException | JSONException | TransformerException e) 
