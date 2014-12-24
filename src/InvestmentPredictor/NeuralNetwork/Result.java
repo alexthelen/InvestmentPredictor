@@ -2,42 +2,47 @@ package InvestmentPredictor.NeuralNetwork;
 
 import java.util.Date;
 
-public class Result implements IResult {
+public class Result implements IResult 
+{
+	// Attributes -----------------------------------------------------
+	int _fundId;
+	int _neuronId;
+	Date _generationDate;
+	double _estimation;
+	double _actualValue;
+	
+	// Constructors ---------------------------------------------------
+	public Result(int fundId, int neuronId, Date generationDate, double estimation)
+	{
+		this._fundId = fundId;
+		this._generationDate = generationDate;
+		this._estimation = estimation;
+	}
+	
+	// Getters & Setters -----------------------------------------------
+	@Override
+	public int GetFundID() { return this._fundId; }
+	
+	@Override
+	public int GetNeuronID() { return this._neuronId; }
 
 	@Override
-	public int GetFundID() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public Date GetGenerationDate() { return this._generationDate; }
 
 	@Override
-	public Date GetGenerationDate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public double GetEstimation() { return this._estimation; }
 
 	@Override
-	public double GetEstimation() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public double GetActualValue() { return this._actualValue; }
 
 	@Override
-	public double GetActualValue() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public void SetEstimation(double estimation) { this._estimation = estimation; }
 
 	@Override
-	public void SetEstimation(double estimation) {
-		// TODO Auto-generated method stub
+	public void SetActualValue(double value) { this._actualValue = value; }
 
-	}
-
-	@Override
-	public void SetActualValue(double value) {
-		// TODO Auto-generated method stub
-
-	}
-
+	// Public Methods -------------------------------------------------
+	
+	// Private Methods ------------------------------------------------
+	
 }
