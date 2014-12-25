@@ -15,10 +15,14 @@ public class Neuron implements INeuron
 	private ArrayList<IWeight> _weightList;
 	private double processResult;
 	private int _rating;
+	private String _fundTicker;
+	private int _neuronId;
 	
 	// Constructors ---------------------------------------------------
-	public Neuron(Date birthDate, ArrayList<IWeight> weightList)
+	public Neuron(String fundTicker, int neuronId, Date birthDate, ArrayList<IWeight> weightList)
 	{
+		this._fundTicker = fundTicker;
+		this._neuronId = neuronId;
 		this._birthDate = birthDate;
 		this._weightList = weightList;
 	}
@@ -32,6 +36,15 @@ public class Neuron implements INeuron
 	
 	@Override
 	public void SetRating(int rating) { this._rating = rating; }
+	
+	@Override
+	public String GetFundTicker() { return this._fundTicker; }
+	
+	@Override
+	public int GetNeuronId() { return this._neuronId; }
+	
+	@Override
+	public void SetNeuronId(int id) { this._neuronId = id; }
 	
 	public ArrayList<IWeight> GetWeightList() { return this._weightList; }
 	
@@ -59,9 +72,9 @@ public class Neuron implements INeuron
 	}
 
 	@Override
-	public INeuron BirthChild()
+	public INeuron BirthChild(int id)
 	{
-		Neuron child = new Neuron(new Date(), new ArrayList<IWeight>());
+		Neuron child = new Neuron(this.GetFundTicker(), id, new Date(), new ArrayList<IWeight>());
 		Cloner cloner = new Cloner();
 		Random randomGenerator = new Random();
 		IWeight childWeight;

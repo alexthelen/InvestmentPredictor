@@ -1,33 +1,27 @@
 package InvestmentPredictor.NeuralNetwork;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Result implements IResult 
 {
 	// Attributes -----------------------------------------------------
-	int _fundId;
-	int _neuronId;
-	Date _generationDate;
+	String _fundId;
+	Calendar _estimationDate;
 	double _estimation;
 	double _actualValue;
 	
 	// Constructors ---------------------------------------------------
-	public Result(int fundId, int neuronId, Date generationDate, double estimation)
+	public Result(String fundId, Calendar estimationDate, double estimation)
 	{
 		this._fundId = fundId;
-		this._generationDate = generationDate;
+		this._estimationDate = estimationDate;
 		this._estimation = estimation;
 	}
 	
 	// Getters & Setters -----------------------------------------------
 	@Override
-	public int GetFundID() { return this._fundId; }
-	
-	@Override
-	public int GetNeuronID() { return this._neuronId; }
-
-	@Override
-	public Date GetGenerationDate() { return this._generationDate; }
+	public String GetFundID() { return this._fundId; }
 
 	@Override
 	public double GetEstimation() { return this._estimation; }
@@ -40,6 +34,9 @@ public class Result implements IResult
 
 	@Override
 	public void SetActualValue(double value) { this._actualValue = value; }
+	
+	@Override
+	public Calendar GetEstimationDate() { return this._estimationDate; }
 
 	// Public Methods -------------------------------------------------
 	

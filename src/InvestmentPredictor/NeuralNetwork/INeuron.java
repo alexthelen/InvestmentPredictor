@@ -11,5 +11,8 @@ public interface INeuron extends Serializable
 	public int GetRating();
 	public void SetRating(int rating);
 	public Date GetBirthDate();
-	public INeuron BirthChild();
+	public INeuron BirthChild(int id);
+	public String GetFundTicker();
+	public int GetNeuronId();
+	public void SetNeuronId(int id);
 }
