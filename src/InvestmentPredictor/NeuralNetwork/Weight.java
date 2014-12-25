@@ -1,6 +1,6 @@
 package InvestmentPredictor.NeuralNetwork;
 
-public class Weight implements IWeight 
+public class Weight implements IWeight
 {
 	// Attributes -----------------------------------------------------
 	private String _name;
@@ -25,7 +25,9 @@ public class Weight implements IWeight
 	@Override
 	public double GetWeightValue() { return this._weightValue; }
 	
-	// 
 	@Override
 	public void SetValue(double value) { this._value = value; }
+	
+	@Override
+	public void SetWeightValue(double weightValue) { this._weightValue = weightValue; }
 }

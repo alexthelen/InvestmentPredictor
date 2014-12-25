@@ -44,13 +44,14 @@ public class BasicNeuralNetwork implements INeuralNetwork
 	@Override
 	public void EvolveNetwork()
 	{
-		// TODO Auto-generated method stub
-		
-		//Get Top %10 of Neurons
-		//Get Bottom %10 of Neurons		
-		//Delete Bottom %10 of Neurons
-		//Clone and mutate Top %10 of Neurons
-		//Replace Bottom %10 of Neurons with Cloned Top %10 of Neurons
+		int topIndex = (int) Math.round(this._neuronList.size() * 0.1);
+		int bottomIndex = (int) Math.round(this._neuronList.size() * 0.9);
+			
+		for(int i = bottomIndex; i < this._neuronList.size(); i++)
+			this.DeleteNeuron(this._neuronList.get(i));
+				
+		for(int i = 0; i < topIndex; i++)
+			this._neuronList.add(this._neuronList.get(i).BirthChild());
 	}
 
 	@Override
