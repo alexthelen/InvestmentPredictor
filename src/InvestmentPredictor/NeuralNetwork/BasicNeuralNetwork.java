@@ -37,6 +37,8 @@ public class BasicNeuralNetwork implements INeuralNetwork
 	public String GetFundTicker() { return this._fundTicker; }
 	public void SetFundTicker(String fundTicker) { this._fundTicker = fundTicker; }
 	
+	public ArrayList<INeuron> GetNeuronList() { return this._neuronList; }
+	
 	// Public Methods --------------------------------------------------
 	@Override
 	public Iterable<INeuron> EvaluateNeurons() 
@@ -55,7 +57,6 @@ public class BasicNeuralNetwork implements INeuralNetwork
 	{
 		int topIndex = (int) Math.round(this._neuronList.size() * 0.1);
 		int bottomIndex = (int) Math.round(this._neuronList.size() * 0.9);
-		int nextId;
 			
 		for(int i = bottomIndex; i < this._neuronList.size(); i++)
 			this.DeleteNeuron(this._neuronList.get(i));
