@@ -43,6 +43,8 @@ public class BasicNeuralNetwork implements INeuralNetwork
 	@Override
 	public Iterable<INeuron> EvaluateNeurons() 
 	{
+		// TODO: Needs to rate neurons based on actual value vs what it predicted
+		
 		if(this._neuronList != null && this._neuronList.size() > 1)
 		{
 			int lowerIndex = 0;

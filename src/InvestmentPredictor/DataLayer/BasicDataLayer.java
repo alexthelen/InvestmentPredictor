@@ -44,6 +44,8 @@ public class BasicDataLayer implements IDataLayer
 	}
 	
 	// Public Methods -------------------------------------------------
+	//TODO: Add method to get historical fund data from yahoo based on ticker passed in
+	
 	@Override
 	public Iterable<INeuron> GetNeurons(String fundTicker, Calendar date) 
 	{
@@ -140,7 +142,6 @@ public class BasicDataLayer implements IDataLayer
 			
 		return results;
 	}
-	
 	
 	public void BuildSqliteDatabase()
 	{

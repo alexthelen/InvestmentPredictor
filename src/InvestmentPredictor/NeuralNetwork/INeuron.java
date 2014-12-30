@@ -5,14 +5,18 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public interface INeuron extends Serializable
-{
-	public double Process(BigDecimal fundPrice);
-	public double Evaluate(double actualValue);
+{	
 	public int GetRating();
 	public void SetRating(int rating);
-	public Date GetBirthDate();
-	public INeuron BirthChild(int id);
-	public String GetFundTicker();
+	
 	public int GetNeuronId();
 	public void SetNeuronId(int id);
+	
+	public Date GetBirthDate();
+	
+	public String GetFundTicker();
+	
+	public INeuron BirthChild(int id);
+	public double Process(BigDecimal fundPrice);
+	public double Evaluate(double actualValue);
 }
