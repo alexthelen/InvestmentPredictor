@@ -1,7 +1,10 @@
 package InvestmentPredictor.NeuralNetwork;
 
-interface IWeight 
+public interface IWeight 
 {
-	String GetName();
-	double GetValue();
+	public String GetName();
+	public double GetValue();
+	public double GetWeightValue();
+	public void SetValue(double value);
+	public void SetWeightValue(double weightValue);
 }

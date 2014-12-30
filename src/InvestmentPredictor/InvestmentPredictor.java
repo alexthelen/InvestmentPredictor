@@ -8,8 +8,8 @@ public class InvestmentPredictor
 
 	public static void main(String[] args) 
 	{
-		BasicDataLayer data = new BasicDataLayer("..\\src\\InvestmentPredictor\\DataLayer\\investmentPredictor.xml", "InvestmentPredictor.db");
-		BasicNeuralNetwork network = new BasicNeuralNetwork();
+		//BasicDataLayer data = new BasicDataLayer("..\\src\\InvestmentPredictor\\DataLayer\\investmentPredictor.xml", "InvestmentPredictor.db");
+		//BasicNeuralNetwork network = new BasicNeuralNetwork();
 		
 		//if the db file doesn't exist call data.BuildDatabase
 		
