@@ -2,7 +2,6 @@ package InvestmentPredictor.DataLayer.YahooQueryLanguage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;

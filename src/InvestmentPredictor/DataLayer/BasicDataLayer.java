@@ -2,7 +2,11 @@ package InvestmentPredictor.DataLayer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Calendar;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,7 +24,6 @@ import org.json.JSONObject;
 import InvestmentPredictor.DataLayer.YahooQueryLanguage.YahooFinance;
 import InvestmentPredictor.NeuralNetwork.INeuron;
 import InvestmentPredictor.NeuralNetwork.IResult;
-import InvestmentPredictor.NeuralNetwork.Neuron;
 
 public class BasicDataLayer implements IDataLayer 
 {
@@ -42,11 +45,11 @@ public class BasicDataLayer implements IDataLayer
 	
 	// Public Methods -------------------------------------------------
 	@Override
-	public Iterable<INeuron> GetNeurons(String identifier) 
+	public Iterable<INeuron> GetNeurons(String fundTicker, Calendar date) 
 	{
 		ArrayList<INeuron> results = new ArrayList<INeuron>();
 		String[] columns = new String[] { "SerializedNeuron" };
-		String where = String.format("FundTicker = '%s'", identifier);
+		String where = String.format("FundTicker = '%s' and TradeDate = '%s'", fundTicker, date.getTime());
 		JSONArray queryResults = this.sqlLite.ExecuteSelect("Neuron", columns, where);
 		byte[] rawData;
 		INeuron neuron;
@@ -56,7 +59,7 @@ public class BasicDataLayer implements IDataLayer
 			for(int i = 0; i < queryResults.length(); i++)
 			{
 				rawData = (byte[])queryResults.get(i);
-				neuron = (INeuron)deserialize(rawData);
+				neuron = (INeuron)this.deserialize(rawData);
 				results.add(neuron);
 			}
 		} 
@@ -66,6 +69,36 @@ public class BasicDataLayer implements IDataLayer
 		}
 		
 		return results;
+	}
+	
+	@Override
+	public void SaveNeurons(String fundTicker, Calendar date, Iterable<INeuron> neurons) 
+	{
+		Iterator<INeuron> itNeurons = neurons.iterator();
+		INeuron neuron;
+		byte[] serailizedNeuron;
+		String tableName = "Neuron";
+		String[] columns = new String[] { "FundTicker", "TradeDate", "SerializedNeuron" };
+		Object [] values;
+		
+		try 
+		{
+			this.sqlLite.OpenConnection();
+			
+			while(itNeurons.hasNext())
+			{
+				neuron = itNeurons.next();
+				serailizedNeuron = this.serialize(neuron);
+				values = new Object[] { fundTicker, date.getTime(), serailizedNeuron };
+				this.sqlLite.ExecuteInsert(tableName, columns, values);
+			}
+			
+			this.sqlLite.CloseConnection();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -112,14 +145,23 @@ public class BasicDataLayer implements IDataLayer
 	{
 		String tableName;
 		String[] tableColumns;
+		String[] primaryKeyColumns;
 		
 		this.sqlLite.OpenConnection();
 
 		tableName = "Neuron";
-		tableColumns = new String[] { "FundTicker", "SerializedNeuron" };
-		this.sqlLite.ExecuteCreateTable(tableName, tableColumns);
+		tableColumns = new String[] { "FundTicker VARCHAR(25) NOT NULL", "TradeDate TEXT NOT NULL", "SerializedNeuron BLOB NOT NULL" };
+		primaryKeyColumns = new String[] { "FundTicker", "TradeDate" };
+		this.sqlLite.ExecuteCreateTable(tableName, tableColumns, primaryKeyColumns);
 		
 		this.sqlLite.CloseConnection();
+	}
+	
+	public void ArchiveOldNeurons(Calendar archiveDate)
+	{
+		//Get neurons less than archiveDate
+		//Save neurons to results database
+		//Delete neurons from sqlite database
 	}
 	
 	// Private Methods ------------------------------------------------
@@ -137,4 +179,5 @@ public class BasicDataLayer implements IDataLayer
 		serialStream.writeObject(obj);
 		return stream.toByteArray();
 	}
+
 }

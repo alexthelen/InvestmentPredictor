@@ -2,6 +2,7 @@ package InvestmentPredictor.DataLayer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -88,7 +89,7 @@ public class SqlLite
 		return result;
 	}
 	
-	public void ExecuteCreateTable(String tableName, String[] columns)
+	public void ExecuteCreateTable(String tableName, String[] columns, String[] primaryKeyColumns)
 	{
 		String createStatement = String.format("Create Table %s (", tableName);
 		Statement statement;
@@ -96,8 +97,13 @@ public class SqlLite
 		for(int i = 0; i < columns.length; i++)
 			createStatement = createStatement.concat(columns[i]).concat(", ");
 		
+		createStatement = createStatement.concat("Primary Key (");
+		
+		for(int i = 0; i < primaryKeyColumns.length; i++)
+			createStatement = createStatement.concat(primaryKeyColumns[i]).concat(", ");
+		
 		createStatement = createStatement.substring(0, createStatement.length() - 2);
-		createStatement = createStatement.concat(");");
+		createStatement = createStatement.concat("));");
 		
 		try
 		{
@@ -145,17 +151,17 @@ public class SqlLite
 		}
 	}
 	
-	public void ExecuteInsert(String tableName, String[] columns, String[] values)
+	public void ExecuteInsert(String tableName, String[] columns, Object[] values)
 	{
 		String insertStatement = "Insert Into %s (%s) Values (%s);";
 		String columnString = "";
 		String valueString = "";
-		Statement statement;
+		PreparedStatement statement;
 		
 		for(int i = 0; i < columns.length; i++)
 		{
 			columnString = columnString.concat(columns[i]).concat(", ");
-			valueString = valueString.concat(values[i]).concat(", ");
+			valueString = valueString.concat("?, ");
 		}
 		
 		columnString = columnString.substring(0, columnString.length() - 2);
@@ -164,7 +170,11 @@ public class SqlLite
 		
 		try 
 		{
-			statement = this.connection.createStatement();
+			statement = this.connection.prepareStatement(insertStatement);
+			
+			for(int i = 0; i < values.length; i++)
+				statement.setObject(i + 1, values[i]);
+			
 			statement.executeUpdate(insertStatement);
 			statement.close();
 		} 
