@@ -2,6 +2,7 @@ package InvestmentPredictor.NeuralNetwork;
 
 public class Weight implements IWeight
 {
+	private static final long serialVersionUID = -4829604365380322625L;
 	// Attributes -----------------------------------------------------
 	private String _name;
 	private double _value;

@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-import com.rits.cloning.Cloner;
+import org.apache.commons.lang3.SerializationUtils;
 
 public class Neuron implements INeuron
 {
+	private static final long serialVersionUID = -7582020411926949338L;
 	// Attributes -----------------------------------------------------
-	private static final long serialVersionUID = 1L; // TODO Figure out what this should actually be for Java serialization
 	private Date _birthDate;
 	private ArrayList<IWeight> _weightList;
 	private double processResult;
@@ -75,7 +75,6 @@ public class Neuron implements INeuron
 	public INeuron BirthChild(int id)
 	{
 		Neuron child = new Neuron(this.GetFundTicker(), id, new Date(), new ArrayList<IWeight>());
-		Cloner cloner = new Cloner();
 		Random randomGenerator = new Random();
 		IWeight childWeight;
 		int percentMutations = randomGenerator.nextInt(5);
@@ -87,7 +86,7 @@ public class Neuron implements INeuron
 		
 		for(int i = 0; i < this._weightList.size(); i++)
 		{
-			childWeight = cloner.deepClone(this._weightList.get(i));	
+			childWeight = SerializationUtils.clone(this._weightList.get(i));	
 			child.AddWeight(childWeight);
 		}
 		

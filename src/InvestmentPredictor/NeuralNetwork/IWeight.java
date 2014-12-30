@@ -1,6 +1,8 @@
 package InvestmentPredictor.NeuralNetwork;
 
-public interface IWeight 
+import java.io.Serializable;
+
+public interface IWeight extends Serializable
 {
 	public String GetName();
 	public double GetValue();
