@@ -1,12 +1,9 @@
 package InvestmentPredictor.DataLayer;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Calendar;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,11 +13,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import InvestmentPredictor.DataLayer.YahooQueryLanguage.FinanceHistoricalData;
 import InvestmentPredictor.DataLayer.YahooQueryLanguage.YahooFinance;
 import InvestmentPredictor.NeuralNetwork.INeuron;
 import InvestmentPredictor.NeuralNetwork.IResult;
@@ -41,11 +40,10 @@ public class BasicDataLayer implements IDataLayer
 		this.xmlFileData = this.xmlFile.ReadFile(new String[] { "Funds", "Securities" });
 		
 		this.sqlLite = new SqlLite(sqliteDbName);
+		this.yahooFinance = new YahooFinance();
 	}
 	
 	// Public Methods -------------------------------------------------
-	//TODO: Add method to get historical fund data from yahoo based on ticker passed in
-	
 	@Override
 	public Iterable<INeuron> GetNeurons(String fundTicker, Calendar date) 
 	{
@@ -53,6 +51,11 @@ public class BasicDataLayer implements IDataLayer
 		String[] columns = new String[] { "SerializedNeuron" };
 		String where = String.format("FundTicker = '%s' and TradeDate = '%s'", fundTicker, date.getTime());
 		JSONArray queryResults = this.sqlLite.ExecuteSelect("Neuron", columns, where);
+		
+		Iterable<String> weightCategories = this.GetWeightCategories();
+		Iterable<FinanceHistoricalData> financeData = this.yahooFinance.GetFinanceHistoricalData(weightCategories);
+		Hashtable<String, BigDecimal> indexData = this.transferToHashTable(financeData);
+		
 		byte[] rawData;
 		INeuron neuron;
 		
@@ -62,6 +65,7 @@ public class BasicDataLayer implements IDataLayer
 			{
 				rawData = (byte[])queryResults.get(i);
 				neuron = (INeuron)this.deserialize(rawData);
+				neuron.UpdateWeightData(indexData);
 				results.add(neuron);
 			}
 		} 
@@ -114,9 +118,25 @@ public class BasicDataLayer implements IDataLayer
 	@Override
 	public Iterable<String> GetWeightCategories() 
 	{
-		// TODO Auto-generated method stub
-		// Use XMLFile
-		return null;
+		ArrayList<String> results = new ArrayList<String>();
+		JSONObject weightObject;
+		JSONArray weightArray;
+		
+		try 
+		{
+			weightObject = this.xmlFileData.getJSONObject("Securities");
+			weightArray = weightObject.getJSONArray("Security");
+			
+			for(int i = 0; i < weightArray.length(); i++)
+				results.add(weightArray.getJSONObject(i).getString("Ticker"));
+
+		} 
+		catch (JSONException e) 
+		{
+			e.printStackTrace();
+		}
+			
+		return results;
 	}
 
 	@Override
@@ -182,4 +202,17 @@ public class BasicDataLayer implements IDataLayer
 		return stream.toByteArray();
 	}
 
+	private Hashtable<String, BigDecimal> transferToHashTable(Iterable<FinanceHistoricalData> indexData)
+	{
+		Hashtable<String, BigDecimal> result = new Hashtable<String, BigDecimal>();
+		BigDecimal movement;
+		
+		for(FinanceHistoricalData fhd : indexData)
+		{
+			movement = fhd.GetOpenPrice().subtract(fhd.GetClosePrice());
+			result.put(fhd.GetSymbol(), movement);
+		}
+		
+		return result;
+	}
 }

@@ -1,6 +1,7 @@
 package InvestmentPredictor;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
@@ -10,7 +11,7 @@ import InvestmentPredictor.NeuralNetwork.INeuralNetwork;
 import InvestmentPredictor.NeuralNetwork.INeuron;
 import InvestmentPredictor.NeuralNetwork.IResult;
 
-class Controller 
+class Controller
 {
 	// Attributes -----------------------------------------------------
 	String xmlFilePath;
@@ -47,19 +48,23 @@ class Controller
 	{
 		BasicNeuralNetwork network;
 		ArrayList<INeuralNetwork> networkList = new ArrayList<INeuralNetwork>();
-		ArrayList<String> fundList = (ArrayList<String>) this.data.GetFunds();
+		ArrayList<String> fundList = this.convertIterableToArrayList(this.data.GetFunds());
 		ArrayList<IResult> resultList = new ArrayList<IResult>(); 
 		ArrayList<INeuron> neuronList;
+		BigDecimal fundPrice;
 		
 		for(String f : fundList)
 		{
-			neuronList = (ArrayList<INeuron>) this.data.GetNeurons(f, new GregorianCalendar());
+			neuronList = this.convertIterableToArrayList(this.data.GetNeurons(f, new GregorianCalendar()));
+			
+			//TODO: Get the fundPrice for the day foreach fund. Can use 
+			//yahooFinance.GetFinanceHistoricalData or create a method in 
+			//BasicDataLayer to do this.
 			
 			if(neuronList.isEmpty())
 				this.SeedNewNetwork(f);
 					
 			network = new BasicNeuralNetwork(f, neuronList);
-			this.UpdateNetworkWeights();
 		}	
 		
 		for(INeuralNetwork n : networkList)
@@ -67,7 +72,6 @@ class Controller
 			n.EvaluateNeurons();
 			n.EvolveNetwork();
 			//resultList.add(n.GetResult(fundPrice));
-			//Get network results and store in list
 		}
 		
 		//Use data to save results
@@ -79,9 +83,12 @@ class Controller
 		
 	}
 	
-	private void UpdateNetworkWeights()
+	private <E> ArrayList<E> convertIterableToArrayList(Iterable<E> iterable)
 	{
-		//Use data to collect external data and feed it to network
-		//This will involve updating all the weights for each neuron
+		ArrayList<E> result = new ArrayList<E>();
+		while (iterable.iterator().hasNext()){
+		    result.add(iterable.iterator().next());
+		}
+		return result;
 	}
 }

@@ -3,6 +3,7 @@ package InvestmentPredictor.NeuralNetwork;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Random;
 
 import org.apache.commons.lang3.SerializationUtils;
@@ -52,14 +53,14 @@ public class Neuron implements INeuron
 	@Override
 	public double Process(BigDecimal fundPrice) 
 	{
-		double priceAdjustment = 0;
+		BigDecimal priceAdjustment = new BigDecimal(0);
 		
-		for(IWeight weight : this._weightList)
+		for(IWeight weight : this.GetWeightList())
 		{
-			priceAdjustment = priceAdjustment + weight.GetValue() * weight.GetWeightValue();
+			priceAdjustment = priceAdjustment.add(weight.GetValue().multiply(weight.GetWeightValue()));
 		}
 		
-		this.processResult = fundPrice.doubleValue() + priceAdjustment;
+		this.processResult = fundPrice.add(priceAdjustment).doubleValue();
 		return this.processResult;
 	}
 
@@ -78,21 +79,21 @@ public class Neuron implements INeuron
 		Random randomGenerator = new Random();
 		IWeight childWeight;
 		int percentMutations = randomGenerator.nextInt(5);
-		int totalMutations = (int)Math.round(percentMutations * 0.01 * this._weightList.size());
+		int totalMutations = (int)Math.round(percentMutations * 0.01 * this.GetWeightList().size());
 		int mutateIndex;
 		IWeight mutateWeight;
 		double mutateWeightValue;
 		double weightChange;
 		
-		for(int i = 0; i < this._weightList.size(); i++)
+		for(int i = 0; i < this.GetWeightList().size(); i++)
 		{
-			childWeight = SerializationUtils.clone(this._weightList.get(i));	
+			childWeight = SerializationUtils.clone(this.GetWeightList().get(i));	
 			child.AddWeight(childWeight);
 		}
 		
 		for(int i = 0; i < totalMutations; i++)
 		{
-			mutateIndex = randomGenerator.nextInt(this._weightList.size());
+			mutateIndex = randomGenerator.nextInt(this.GetWeightList().size());
 			weightChange = randomGenerator.nextDouble();
 			
 			if(randomGenerator.nextBoolean())
@@ -100,14 +101,33 @@ public class Neuron implements INeuron
 			
 			weightChange *= 0.01;
 			mutateWeight = child.GetWeightList().get(mutateIndex);
-			mutateWeightValue = mutateWeight.GetWeightValue() + weightChange;
-			mutateWeight.SetValue(mutateWeightValue);
+			mutateWeightValue = mutateWeight.GetWeightValue().doubleValue() + weightChange;
+			mutateWeight.SetWeightValue(new BigDecimal(mutateWeightValue));
 		}
 		
 		return child;
 	}
 	
-	public void AddWeight(IWeight weight) { this._weightList.add(weight); }
+	public void AddWeight(IWeight weight) { this.GetWeightList().add(weight); }
+	
+	public <K, V> void UpdateWeightData(Hashtable<K, V> newData)
+	{
+		IWeight weight;
+		BigDecimal newValue;
+		
+		for(int i = 0; i < this.GetWeightList().size(); i++)
+		{
+			weight = this.GetWeightList().get(i);
+			
+			if(newData.containsKey(weight.GetName()))
+			{
+				newValue = (BigDecimal) newData.get(weight.GetName());
+				weight.SetValue(newValue);
+			}
+			else
+				weight.SetValue(null);
+		}
+	}
 	
 	// Private Methods ------------------------------------------------
 }

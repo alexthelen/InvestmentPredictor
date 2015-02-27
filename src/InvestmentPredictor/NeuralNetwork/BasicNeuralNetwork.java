@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 
 import InvestmentPredictor.DataLayer.IDataLayer;
 
@@ -45,49 +46,50 @@ public class BasicNeuralNetwork implements INeuralNetwork
 	{
 		// TODO: Needs to rate neurons based on actual value vs what it predicted
 		
-		if(this._neuronList != null && this._neuronList.size() > 1)
+		if(this.GetNeuronList() != null && this.GetNeuronList().size() > 1)
 		{
 			int lowerIndex = 0;
-			int higherIndex = this._neuronList.size() - 1;
+			int higherIndex = this.GetNeuronList().size() - 1;
 			this.QuickSort(lowerIndex, higherIndex);
 		}
-		return this._neuronList;
+		return this.GetNeuronList();
 	}
 
 	@Override
 	public void EvolveNetwork()
 	{
-		int topIndex = (int) Math.round(this._neuronList.size() * 0.1);
-		int bottomIndex = (int) Math.round(this._neuronList.size() * 0.9);
+		int topIndex = (int) Math.round(this.GetNeuronList().size() * 0.1);
+		int bottomIndex = (int) Math.round(this.GetNeuronList().size() * 0.9);
 			
-		for(int i = bottomIndex; i < this._neuronList.size(); i++)
-			this.DeleteNeuron(this._neuronList.get(i));
+		for(int i = bottomIndex; i < this.GetNeuronList().size(); i++)
+			this.DeleteNeuron(this.GetNeuronList().get(i));
 				
 		for(int i = 0; i < topIndex; i++)
-			this._neuronList.add(this._neuronList.get(i).BirthChild(this.GetNextAvaibaleId()));
+			this.GetNeuronList().add(this.GetNeuronList().get(i).BirthChild(this.GetNextAvaibaleId()));
 	}
 
 	@Override
 	public void DeleteNeuron(INeuron neuron) 
 	{
-		this._neuronList.remove(neuron);
+		this.GetNeuronList().remove(neuron);
 		neuron = null;
 	}
 
+	
 	// Private Methods ------------------------------------------------
 	private void QuickSort(int lowerIndex, int higherIndex) 
 	{
         
         int i = lowerIndex;
         int j = higherIndex;
-        int pivot = this._neuronList.get(lowerIndex + (higherIndex - lowerIndex) / 2).GetRating();
+        int pivot = this.GetNeuronList().get(lowerIndex + (higherIndex - lowerIndex) / 2).GetRating();
         
         while (i <= j) 
         {
-            while (this._neuronList.get(i).GetRating() < pivot) 
+            while (this.GetNeuronList().get(i).GetRating() < pivot) 
                 i++;
             
-            while (this._neuronList.get(j).GetRating() > pivot)
+            while (this.GetNeuronList().get(j).GetRating() > pivot)
                 j--;
             
             if (i <= j) 
@@ -107,24 +109,24 @@ public class BasicNeuralNetwork implements INeuralNetwork
 	
 	private void ExchangeNeurons(int i, int j) 
 	{
-        INeuron temp = this._neuronList.get(i);
-        this._neuronList.set(i, this._neuronList.get(j));
-        this._neuronList.set(j, temp);
+        INeuron temp = this.GetNeuronList().get(i);
+        this.GetNeuronList().set(i, this.GetNeuronList().get(j));
+        this.GetNeuronList().set(j, temp);
     }
 	
 	private int GetNextAvaibaleId()
 	{	
-		for(int i = 0; i < this._neuronList.size(); i++)
+		for(int i = 0; i < this.GetNeuronList().size(); i++)
 		{
-			for(int j = 0; j < this._neuronList.size(); j++)
+			for(int j = 0; j < this.GetNeuronList().size(); j++)
 			{
-				if(i == this._neuronList.get(j).GetNeuronId())
+				if(i == this.GetNeuronList().get(j).GetNeuronId())
 					break;
-				else if (j == this._neuronList.size() -1)
+				else if (j == this.GetNeuronList().size() -1)
 					return i;
 			}
 		}
 		
-		return this._neuronList.size();
+		return this.GetNeuronList().size();
 	}
 }

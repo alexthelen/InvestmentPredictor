@@ -3,6 +3,7 @@ package InvestmentPredictor.NeuralNetwork;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Hashtable;
 
 public interface INeuron extends Serializable
 {	
@@ -19,4 +20,5 @@ public interface INeuron extends Serializable
 	public INeuron BirthChild(int id);
 	public double Process(BigDecimal fundPrice);
 	public double Evaluate(double actualValue);
+	public <K, V> void UpdateWeightData(Hashtable<K, V> newData);
 }

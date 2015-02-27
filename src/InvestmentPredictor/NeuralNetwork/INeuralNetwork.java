@@ -1,7 +1,7 @@
 package InvestmentPredictor.NeuralNetwork;
 
 import java.math.BigDecimal;
-
+import java.util.Hashtable;
 
 
 public interface INeuralNetwork 
